@@ -1,0 +1,2 @@
+下载Res-(XINGYUN86LLYYTTEENN).7z
+解压到当前目录即可
