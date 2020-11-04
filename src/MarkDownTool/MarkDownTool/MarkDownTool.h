@@ -352,6 +352,17 @@ public:
 				break;
 				default:
 				{
+					switch (uMsg)
+					{
+					case WM_CREATE:
+						EnableWindow(GetParent(hWnd), FALSE);
+						break;
+					case WM_CLOSE:
+						EnableWindow(GetParent(hWnd), TRUE);
+						break;
+					default:
+						break;
+					}
 					if ((fnWndProc = (WNDPROC)GetProp(hWnd, TEXT(__func__))) != NULL)
 					{
 						fnWndProc(hWnd, uMsg, wParam, lParam);
@@ -368,7 +379,7 @@ public:
 			WS_EX_DLGMODALFRAME,
 			wcex.lpszClassName,
 			wcex.lpszClassName,
-			WS_OVERLAPPEDWINDOW,
+			bModal ? WS_POPUPWINDOW | WS_CAPTION : WS_OVERLAPPEDWINDOW,
 			CW_USEDEFAULT,
 			CW_USEDEFAULT,
 			CW_USEDEFAULT,
@@ -392,6 +403,8 @@ public:
 			}
 			ShowWindow(hWnd, SW_SHOW);
 			UpdateWindow(hWnd);
+			SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+			SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
 			while (hWnd != NULL)
 			{
@@ -416,8 +429,6 @@ public:
 			}
 			nRet = (0);
 		}
-
-		if (bModal) { EnableWindow(hParent, TRUE); SetForegroundWindow(hParent); }
 
 		return nRet;
 	}
@@ -537,13 +548,13 @@ public:
 				if (this->cc_umap.find(item) != this->cc_umap.end())
 				{
 					bFound = true;
-					if (this->cc_umap.at(item).sType == cc_item::ST_FIXED)
+					if (this->cc_umap.at(item).sType == cc_item::ST_FIXED || this->cc_umap.at(item).sType == cc_item::ST_Y_SCALE)
 					{
 						xExclude += this->cc_umap.at(item).w;
 					}
 				}
 			}
-			if (bFound > 0)
+			if (bFound == true)
 			{
 				yN++;
 			}
@@ -571,13 +582,13 @@ public:
 				if (this->cc_umap.find(item) != this->cc_umap.end())
 				{
 					bFound = true;
-					if (this->cc_umap.at(item).sType == cc_item::ST_FIXED)
+					if (this->cc_umap.at(item).sType == cc_item::ST_FIXED || this->cc_umap.at(item).sType == cc_item::ST_X_SCALE)
 					{
 						yExclude += this->cc_umap.at(item).h;
 					}
 				}
 			}
-			if (bFound > 0)
+			if (bFound == true)
 			{
 				xN++;
 			}
@@ -678,7 +689,7 @@ public:
 			for (auto row = 0; row < rows.size(); row++)
 			{
 				left = 0;
-				uint16_t uItem = 0;
+				uint32_t uItem = 0;
 				auto cols = rows.at(row);
 				for (auto col = 0; col < cols.size(); col++)
 				{
