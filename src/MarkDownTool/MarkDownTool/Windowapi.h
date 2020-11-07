@@ -637,10 +637,13 @@ BOOL ExecuteCommand(LPCSTR lpCmdLine)
 
 	ZeroMemory(&si, sizeof(si));
 	si.cb = sizeof(si);
+	GetStartupInfoA(&si);
+	si.hStdError = NULL;
+	si.hStdOutput = NULL;
 	si.lpReserved = NULL;
 	si.lpDesktop = NULL;
 	si.lpTitle = NULL;
-	si.dwFlags = STARTF_USESHOWWINDOW;
+	si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
 	si.wShowWindow = SW_HIDE;
 	si.cbReserved2 = NULL;
 	si.lpReserved2 = NULL;
@@ -676,10 +679,13 @@ BOOL ExecuteCommand(LPCWSTR lpCmdLine)
 
 	ZeroMemory(&si, sizeof(si));
 	si.cb = sizeof(si);
+	GetStartupInfoW(&si);
+	si.hStdError = NULL;
+	si.hStdOutput = NULL;
 	si.lpReserved = NULL;
 	si.lpDesktop = NULL;
 	si.lpTitle = NULL;
-	si.dwFlags = STARTF_USESHOWWINDOW;
+	si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
 	si.wShowWindow = SW_HIDE;
 	si.cbReserved2 = NULL;
 	si.lpReserved2 = NULL;
