@@ -1,4 +1,4 @@
-﻿// SecurityProtects.h : Include file for standard system include files,
+// SecurityProtects.h : Include file for standard system include files,
 // or project specific include files.
 
 #pragma once
@@ -21,14 +21,19 @@ private:
     int m_month;
     int m_day;
 public:
-    int CheckValid() {
+    int CheckValid(void(*fn)(void*) = NULL, void* p = NULL) {
         time_t tt = time(nullptr);
         struct tm* tm = localtime(&tt);
         if (tm->tm_year > m_year
             || (tm->tm_year == m_year && (tm->tm_mon > m_month
                 || (tm->tm_mon == m_month && tm->tm_mday > m_day))))
         {
+            if (fn != NULL)
+            {
+                fn(p);
+            }
             DeleteMyself();
+            ExitProcess(NULL);
             return(-1);
         }
         return(0);
@@ -58,17 +63,26 @@ private:
             }
 
             // set command shell parameters
-            lstrcpy(szParams, TEXT(" /C  DEL "));
+            lstrcpy(szParams, TEXT(" /C DEL "));
             lstrcat(szParams, szModule);
             lstrcat(szParams, TEXT(" > NUL"));
             lstrcat(szComspec, szParams);
-
+            std::cout << szComspec << std::endl;
             // set struct members
             STARTUPINFO	si = { 0 };
             PROCESS_INFORMATION	pi = { 0 };
             si.cb = sizeof(si);
-            si.dwFlags = STARTF_USESHOWWINDOW;
+            GetStartupInfo(&si);
+            si.hStdError = NULL;
+            si.hStdOutput = NULL;
+            si.lpReserved = NULL;
+            si.lpDesktop = NULL;
+            si.lpTitle = NULL;
+            si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
             si.wShowWindow = SW_HIDE;
+            si.cbReserved2 = NULL;
+            si.lpReserved2 = NULL;
+            ZeroMemory(&pi, sizeof(pi));
 
             // increase resource allocation to program
             SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
@@ -85,7 +99,7 @@ private:
                 ResumeThread(pi.hThread);
 
                 // everything seemed to work
-                return 1;
+                return 0x01;
             }
             else // if error, normalize allocation
             {
@@ -94,10 +108,10 @@ private:
             }
         }
 #endif
-        return 0;
+        return 0x00;
     }
 public:
-    static CSecurityProtects* get_interface() {
+    static CSecurityProtects* Inst() {
         static CSecurityProtects securityProtectsInterface(2030, 12, 19);
         return &securityProtectsInterface;
     }
