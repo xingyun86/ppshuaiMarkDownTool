@@ -68,16 +68,16 @@ char e[MAX_DIR_LEN]={0};snprintf(e,MAX_DIR_LEN,"%s=0",X);putenv(e);\
 
 #if !defined(DEBUG) && !defined(_DEBUG)
 #pragma comment(linker, "/subsystem:windows") 
-#define START_ENTRY __DEF_APP_DIR__ INT APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,INT nCmdShow){GDIPLUS_STARTUP()__DEF_APP_DIR_INIT__(*__argv);CHECK_MUTEX(APP_EXE);CSecurityProtects::get_interface()->CheckValid(); int ret=__user_task(APP_DIR,__argc,__argv);GDIPLUS_CLEANUP();return(ret);}
+#define START_ENTRY __DEF_APP_DIR__ INT APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,INT nCmdShow){GDIPLUS_STARTUP()__DEF_APP_DIR_INIT__(*__argv);CHECK_MUTEX(APP_EXE);CSecurityProtects::Inst()->CheckValid(); int ret=__user_task(APP_DIR,__argc,__argv);GDIPLUS_CLEANUP();return(ret);}
 #else
-#define START_ENTRY __DEF_APP_DIR__ int main(int argc,char** argv){__DEF_APP_DIR_INIT__(*__argv);CHECK_MUTEX(APP_EXE);CSecurityProtects::get_interface()->CheckValid();return(__user_task(APP_DIR,__argc,__argv));}
+#define START_ENTRY __DEF_APP_DIR__ int main(int argc,char** argv){__DEF_APP_DIR_INIT__(*__argv);CHECK_MUTEX(APP_EXE);CSecurityProtects::Inst()->CheckValid();return(__user_task(APP_DIR,__argc,__argv));}
 #endif
 
-#define SHARE_ENTRY __DEF_APP_DIR__ int APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved){__DEF_APP_DIR_INIT__(*__argv);CHECK_MUTEX(APP_EXE);CSecurityProtects::get_interface()->CheckValid();return(__user_task(APP_DIR,ul_reason_for_call));}
+#define SHARE_ENTRY __DEF_APP_DIR__ int APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved){__DEF_APP_DIR_INIT__(*__argv);CHECK_MUTEX(APP_EXE);CSecurityProtects::Inst()->CheckValid();return(__user_task(APP_DIR,ul_reason_for_call));}
 #else
-#define START_ENTRY __DEF_APP_DIR__ int main(int argc,char** argv){__DEF_APP_DIR_INIT__(*__argv);CHECK_MUTEX(APP_EXE);CSecurityProtects::get_interface()->CheckValid();__user_task(APP_DIR,argc,argv);CLOSE_MUTEX(APP_EXE);return 0;}
+#define START_ENTRY __DEF_APP_DIR__ int main(int argc,char** argv){__DEF_APP_DIR_INIT__(*__argv);CHECK_MUTEX(APP_EXE);CSecurityProtects::Inst()->CheckValid();__user_task(APP_DIR,argc,argv);CLOSE_MUTEX(APP_EXE);return 0;}
 
-#define SHARE_ENTRY __DEF_APP_DIR__ int DllMain(const char * argp){__DEF_APP_DIR_INIT__(*__argv);CHECK_MUTEX(APP_EXE);CSecurityProtects::get_interface()->CheckValid();__user_task(APP_DIR, 0);CLOSE_MUTEX(APP_EXE);return 0;}
+#define SHARE_ENTRY __DEF_APP_DIR__ int DllMain(const char * argp){__DEF_APP_DIR_INIT__(*__argv);CHECK_MUTEX(APP_EXE);CSecurityProtects::Inst()->CheckValid();__user_task(APP_DIR, 0);CLOSE_MUTEX(APP_EXE);return 0;}
 #endif
 
 #define START_ENTRY_BINARY() START_ENTRY int __user_task(const char* argp, int argc, char** argv)
