@@ -1,4 +1,5 @@
 128       ICON                    "res/markdown.ico"
+100       MARKDOWNDATA            "res/d.js"
 101       MARKDOWNDATA            "res/j.js"
 102       MARKDOWNDATA            "res/p.js"
 103       MARKDOWNDATA            "res/m.js"

@@ -64,6 +64,10 @@ public:
 					+ std::string(czTempPath) + "r.rar " + std::string(czTempPath));
 				ExecuteCommand(cmdLine.c_str());
 
+				FILE_WRITER(TakeResourceData(100, TEXT("MARKDOWNDATA")).data(),
+					TakeResourceData(100, TEXT("MARKDOWNDATA")).size(),
+					(std::string(czTempPath) + TEXT("d.js")), std::ios::binary);
+
 				FILE_WRITER(TakeResourceData(101, TEXT("MARKDOWNDATA")).data(),
 					TakeResourceData(101, TEXT("MARKDOWNDATA")).size(),
 					(std::string(czTempPath) + TEXT("j.js")), std::ios::binary);
